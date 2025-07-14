@@ -56,7 +56,7 @@ with st.form("input_form"):
     submitted = st.form_submit_button("🌱 Calculate My Carbon Footprint")
 
 if submitted:
-    # Build input DataFrame
+    # Build input dictionary for all features
     input_dict = {
         'Sex_' + sex: 1,
         'Diet_' + diet: 1,
@@ -68,8 +68,13 @@ if submitted:
         'Annual electricity use (kWh)': electricity,
         'Annual waste generated (kg)': waste
     }
+    # Ensure all required columns are present, fill missing with 0
     input_data = {col: input_dict.get(col, 0) for col in feature_columns}
     input_df = pd.DataFrame([input_data])
+
+    # Ensure no NaNs and correct data type
+    input_df = input_df.fillna(0)
+    input_df = input_df.astype(float)
 
     # Predict
     prediction = model.predict(input_df)[0]
